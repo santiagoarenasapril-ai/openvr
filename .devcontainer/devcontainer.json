@@ -1,0 +1,624 @@
+.devcontainer/devcontainer.json{
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {}
+}g., HelloWorldMetaSpatial.
+Select Kotlin as the language and ensure the minimum API level is set to API 24 (Android 7.0) or higher.
+Integrate the Meta Spatial SDK:
+
+Download the SDK samples from the GitHub repository Meta Spatial SDK Samples.
+Add the necessary dependencies and libraries to your project’s build.gradle files:
+Include the Meta Spatial SDK libraries and update your build.gradle files accordingly. Follow the documentation for exact integration steps.
+Step 2: Configuring the Project for Meta Quest
+
+Open AndroidManifest.xml and ensure you add the necessary permissions for spatial tracking, hand tracking, and passthrough functionality:
+<uses-permission android:name="android.permission.CAMERA" /> 
+<uses-permission android:name="android.permission.INTERNET" />
+Update the activity tag to enable the VR mode:
+<meta-data     android:name="com.oculus.vr.mode"     android:value="true" />
+Step 3: Writing the Main Application Code
+
+Open MainActivity.kt and set up the basics:
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.meta.spatial.sdk.SpatialView
+import com.meta.spatial.sdk.SpatialScene
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Create a SpatialView instance
+        val spatialView = SpatialView(this)
+
+        // Set up a basic scene
+        val scene = SpatialScene()
+        scene.addText("Hello World", position = Vector3(0f, 0f, -2f))
+
+        // Attach the scene to the view
+        spatialView.setScene(scene)
+
+        // Set the view as the content view
+        setContentView(spatialView)
+    }
+}
+Step 4: Build and Deploy the App
+
+Connect your Meta Quest device via USB and ensure Developer Mode is enabled.
+Open Meta Quest Developer Hub (MQDH) to manage your device.
+Build the project by selecting “Build > Build Bundle(s) / APK(s) > Build APK(s)” in Android Studio.
+Deploy the app:
+Hit the play button
+Alternatively, use MQDH to install the APK onto your Meta Quest device.
+Alternatively, use adb install path_to_apk from the command line to deploy it directly.
+Step 5: Testing on Meta Quest
+
+Put on your Meta Quest headset, and locate your installed app under “Unknown Sources.”
+Launch your “Hello World” app, and you should see “Hello World” displayed in the virtual environment.
+For more advanced features, refer to the sample projects and official documentation available in the GitHub repository Meta Spatial SDK Samples.
+
+Official Hello World Sample
+Here is the official HelloWord Sample —
+
+Press enter or click to view image in full size
+
+Meta Developers
+Edit description
+developers.meta.com
+
+You need the …
+
+Press enter or click to view image in full size
+
+Meta Spatial SDK
+Downloads | Build with Meta Horizon OS
+Edit description
+developers.meta.com
+
+Jetpack Compose
+You should be able to use Jetpack Compose for development !!! to leverage Compose’s modern, declarative UI features while integrating them into the spatial environment provided by the Meta Spatial SDK.
+
+Here’s how we should be able to do it (abbreviated steps):
+
+Step 1: Set Up Your Project with Compose Dependencies
+
+Create a new Android project in Android Studio.
+
+Add Jetpack Compose dependencies to your build.gradle file:
+
+dependencies {
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation("androidx.activity:activity-compose:1.7.2")
+
+    // Include Meta Spatial SDK dependencies
+    implementation("com.meta.spatial:sdk:VERSION_NUMBER") // Replace with the actual version
+}
+Make sure your Compose dependencies are up to date and compatible with your project.
+
+Step 2: Create a Basic Compose “Hello World” UI
+
+Create a new Composable function for displaying "Hello World":
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.ComponentActivity
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Set Compose content
+        setContent {
+            HelloWorldComposable()
+        }
+    }
+}
+
+@Composable
+fun HelloWorldComposable() {
+    Text(
+        text = "Hello World",
+        fontSize = 32.sp,
+        color = Color.White,
+        fontWeight = FontWeight.Bold
+    )
+}
+This is a simple Composable function that displays “Hello World” using Jetpack Compose.
+
+Get YLabZ’s stories in your inbox
+Join Medium for free to get updates from this writer.
+
+Enter your email
+Subscribe
+Step 3: Integrate with Meta Spatial SDK
+
+Modify the MainActivity to include SpatialView as the root view:
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import com.meta.spatial.sdk.SpatialView
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Initialize SpatialView
+        val spatialView = SpatialView(this)
+
+        // Set Compose content within the SpatialView
+        spatialView.setContent {
+            HelloWorldComposable()
+        }
+
+        // Set SpatialView as the activity's content view
+        setContentView(spatialView)
+    }
+}
+Here, the setContent function of Jetpack Compose is nested within the SpatialView, allowing the "Hello World" Composable to render inside the Meta Quest environment.
+
+Step 4: Build and Deploy the App
+
+Build the project and deploy it to your Meta Quest device using Android Studio, MQDH, or adb install path_to_apk.
+Testing on Meta Quest
+
+Launch the app from “Unknown Sources” in your Meta Quest headset, and you should see the “Hello World” text rendered within the VR environment using Jetpack Compose.
+Why Use Compose with Meta Spatial SDK?
+
+Declarative UI: Compose allows you to create complex UI elements more efficiently and declaratively.
+Seamless Integration: Combining Compose with the Meta Spatial SDK means you can build rich, interactive UIs without abandoning familiar Android development practices.
+This setup allows you to harness the power of Jetpack Compose alongside the spatial capabilities of the Meta Spatial SDK, providing a modern, efficient way to develop VR experiences on Meta Quest devices.
+
+Entity Component System (ECS)
+Both visionOS (Apple’s platform for the Vision Pro headset) and Meta’s platforms for VR (like the Meta Quest series using Horizon OS) leverage the Entity Component System (ECS) architecture, which is widely adopted in gaming and real-time 3D applications. ECS is a design pattern that optimizes performance and flexibility for handling complex, interactive environments by decoupling data from behavior. Here’s how both systems apply ECS architecture:
+
+1. Understanding ECS Architecture:
+Entity: Represents a unique ID that acts as a container for components.
+Component: Holds data without any logic (e.g., position, velocity, or color).
+System: Contains the logic to process entities with the relevant components (e.g., movement, rendering).
+The ECS pattern allows for efficient data-oriented design, making it well-suited for rendering, physics, and handling interactions in spatial computing environments like AR/VR.
+
+2. visionOS and ECS:
+Usage: visionOS, Apple’s platform for spatial computing, integrates the ECS pattern primarily through its RealityKit framework. RealityKit provides developers with an ECS-based system to manage AR/VR scenes efficiently.
+Entity and Component Design: In RealityKit, every object in a scene is an entity that can have multiple components attached (e.g., 3D models, animations, or physics properties). This structure allows developers to create complex interactions and animations in AR and VR experiences.
+Flexibility: The ECS pattern in visionOS helps efficiently manage updates to the scene graph, enabling smooth rendering and physics calculations, essential for high-performance mixed reality applications on the Vision Pro.
+3. Meta and ECS:
+Usage: Meta also adopts an ECS architecture, particularly in its game engine integrations (Unity, Unreal Engine) and now in the native Meta Spatial SDK for developing VR experiences. Unity’s ECS, known as DOTS (Data-Oriented Technology Stack), is often used for Meta Quest applications, and the Meta Spatial SDK follows similar principles.
+Optimized Performance: The ECS architecture in Meta’s environment helps in rendering complex 3D environments efficiently on the Quest’s hardware, ensuring smooth frame rates, which is crucial for VR to prevent motion sickness and deliver an immersive experience.
+System Management: Meta’s use of ECS also means that systems can operate independently, managing specific aspects like physics, input handling, or spatial audio, thus improving modularity and scalability in VR applications.
+Similarities and Differences:
+Similarities:
+
+Both systems leverage ECS for performance efficiency, handling the dynamic, complex environments needed for AR/VR.
+The decoupling of data and behavior makes it easier to manage updates and changes in spatial computing experiences.
+Differences:
+
+visionOS emphasizes AR with RealityKit, focusing more on integrating AR elements into real-world spaces, while Meta’s implementation targets full VR experiences with more emphasis on 3D world rendering.
+Meta’s reliance on engines like Unity means adopting Unity’s DOTS ECS, whereas visionOS directly integrates ECS within its RealityKit framework.
+ECS is fundamental in achieving high-performance spatial experiences, and both visionOS and Meta’s platforms use this architecture to provide fluid, responsive, and immersive AR/VR applications. If you’d like more detailed information on how to implement ECS in either platform, let me know!
+
+Universal Scene Description (USD)
+Meta Horizon does not natively use USDZ (Universal Scene Description Zip) as its primary format.
+
+How Meta and USDZ Interact:
+Interoperability: Although Meta Horizon itself doesn’t natively rely on USDZ, Meta has shown interest in supporting open and interoperable standards. Meta might offer conversion or import capabilities for USDZ files to ensure broader compatibility between AR/VR platforms in the future.
+3D Asset Creation: For experiences and environments within Meta Horizon Worlds, Meta primarily focuses on using its internal asset creation tools. These assets can be imported through game engines like Unity or Unreal Engine, which support multiple 3D file formats, but USDZ isn’t a native file type directly used by Meta Horizon.
+Common Formats Used by Meta:
+Meta typically works with formats like FBX, GLTF, and OBJ for 3D models and assets, which are more widely compatible with VR and gaming engines.
+If you’re planning on working with Meta’s VR experiences, consider using GLTF/GLB as it’s an open standard that’s gaining traction across many platforms and is well-suited for VR environments, including Meta’s ecosystem.
+
+NVIDIA is heavily invested in USD.
+
+Universal Scene Description (USD) at NVIDIA
+USD is a powerful, extensible 3D framework. NVIDIA is investing in USD so it evolves as a key building block of the…
+www.nvidia.com
+
+Jensen Huang and Mark Zuckerberg are close freinds and share much in the way of how they see the world …
+
+Jensen Huang, Mark Zuckerberg to Discuss Future of Graphics and Virtual Worlds at SIGGRAPH 2024 …
+
+Jensen Huang, Mark Zuckerberg to Discuss Future of Graphics and Virtual Worlds at SIGGRAPH 2024
+NVIDIA founder and CEO Jensen Huang and Meta founder and CEO Mark Zuckerberg will hold a public fireside chat on…
+blogs.nvidia.com
+
+We believe NVIDIA will push Meta to support USD(Z).
+
+Meta is a member of AOUSD …
+
+Press enter or click to view image in full size
+
+Press enter or click to view image in full size
+
+Meta is a member of AOUSD — Open USD standards body
+Material X
+MaterialX
+The Open Chess Set (authored by Moeen and Mujtaba Sayed, contributed to MaterialX by SideFX, rendered in Arnold for…
+materialx.org
+
+Meta Horizon does not currently list direct support for MaterialX. However, MaterialX is widely supported across various platforms and software used in 3D content creation and rendering, such as Unreal Engine, NVIDIA Omniverse, and Autodesk Maya.
+
+Reference:
+OpenXR Mobile SDK: Purpose and Use
+The OpenXR Mobile SDK is designed primarily for tool builders, engine developers, and third-party integrators who want to enable native development or integrate their engines with Meta devices running Android.
+This SDK provides low-level access and resources, such as APIs, libraries, and samples, to interact directly with Meta Quest or other Meta devices at a native level.
+As an App Developer for Meta Horizon:
+You typically won’t need to interact with the OpenXR Mobile SDK directly, as it’s more suited for those building foundational tools or integrating engines like Unity or Unreal with Meta’s platform.
+For app development, most developers use higher-level engines like Unity or Unreal Engine, which already handle the complexities of OpenXR integration. These engines abstract away the lower-level details, allowing you to focus on creating your VR experience.
+When Might You Need OpenXR?
+If you’re developing an app with highly custom requirements or working on integrating new features that aren’t supported by the standard Unity/Unreal setup, you might consider leveraging OpenXR through the Mobile SDK. However, for most app-building scenarios, especially within Meta Horizon, the existing engines and tools provide all the necessary functionality.
+In summary, as an app developer, you’ll typically build on top of existing engines or tools that utilize OpenXR, rather than working with the OpenXR Mobile SDK directly.
+
+The terms Meta Horizon and Meta Quest refer to different aspects of Meta’s (formerly Facebook’s) VR ecosystem, and they serve distinct purposes:
+
+1. Meta Quest:
+Hardware: Meta Quest is the brand name for Meta’s VR headset hardware, including devices like the Meta Quest 2 and the newly released Meta Quest 3. These headsets are standalone VR devices, meaning they do not require a PC or external sensors to function.
+Platform: The Meta Quest headsets run on a customized version of Android called Horizon OS, which powers the VR experiences and apps available on the device.
+Primary Use: The Quest devices are used for playing VR games, exploring VR experiences, socializing, and accessing productivity applications in virtual reality.
+Press enter or click to view image in full size
+
+Devices
+2. Meta Horizon:
+Software and Services: Meta Horizon refers to Meta’s suite of VR social and collaboration experiences. It includes several platforms such as:
+Horizon Worlds: A social VR platform where users can explore virtual environments, create content, and interact with others in shared spaces.
+Horizon Workrooms: A VR collaboration tool that allows users to hold virtual meetings, offering features like a shared whiteboard, screen sharing, and virtual avatars.
+Horizon Venues: A platform for attending virtual events, such as concerts, sports games, or conferences, in a shared virtual environment.
+Purpose: Meta Horizon is focused on fostering social interactions, collaboration, and shared experiences within VR. It’s Meta’s way of building the “metaverse” — a virtual space where users can work, play, and socialize.
+Press enter or click to view image in full size
+
+Meta Horizon OS
+Key Differences:
+Meta Quest is the hardware and VR platform you use to access VR experiences.
+Meta Horizon is the suite of social and collaborative experiences and software services that you can access through your Meta Quest device.
+In summary, Meta Quest is the VR headset you wear, while Meta Horizon represents the various social and collaborative experiences you can participate in while using that headset.
+android.os.BundleMainActivity.ktandroidx.appcompat.app.AppCompatActivitycom.meta.spatial.sdk.SpatialViewdevelopers.meta.comcom.meta.spatial.sdk.SpatialSceneandroidx.activity.compose.setContentandroidx.activity.ComponentActivityandroidx.compose.runtime.Composableandroidx.compose.material.Textandroidx.compose.ui.text.font.FontWeightandroidx.compose.ui.graphics.ColorFontWeight.Boldandroidx.compose.ui.unit.spwww.nvidia.comspatialView.setContentblogs.nvidia.commaterialx.orgOpen in app
+Sign up
+
+Sign in
+
+Search
+
+
+Meta Android VR/AR Dev
+Android Development for Meta Quest? YES !!!
+YLabZ
+YLabZ
+
+
+Follow
+13 min read
+·
+Sep 30, 2024
+
+Listen
+
+
+Share
+
+The Meta Spatial SDK was introduced on September 25, 2024, during Meta Connect 2024. It’s designed to let Android developers build spatial computing applications for the Meta Quest platform using the tools and languages they’re already familiar with, like Android Studio and Kotlin, without needing a game engine like Unity or Unreal. This SDK aims to make it easier to enhance existing mobile apps with 3D elements or create new mixed reality experiences, expanding the utility of the Quest beyond just gaming.
+
+Press enter or click to view image in full size
+
+Meta Quest Android Development
+Introducing Meta Spatial SDK | Meta Connect 2024 | Meta for Developers
+Explore how developers of all backgrounds can more easily build for Meta Horizon OS with our new spatial app framework.
+developers.facebook.com
+
+Here is the SDK — Updated: Sep 22, 2024
+
+Meta Spatial SDK is a new way to build immersive apps for Meta Horizon OS. Meta Spatial SDK lets you combine the rich ecosystem of Android development and the unique capabilities of Meta Quest via accessible APIs. It is Kotlin based, allowing you to use the mobile development languages, tools, and libraries you’re already familiar with. You can build completely new immersive apps, or take your existing mobile app and extend it by adding spatial features.
+
+Meta Developers
+Edit description
+developers.meta.com
+
+The Meta Spatial SDK is needed to enable developers to create mixed reality (MR) and spatial experiences for Meta Quest devices using a native Android development approach, which allows for more efficient development compared to using game engines like Unity or Unreal. It makes it easier for Android developers to bring their apps to VR and enhance them with 3D elements, leveraging their existing skill set in mobile app development.
+
+Key Components of the Meta Spatial SDK:
+Rendering: Provides built-in 3D rendering capabilities, allowing you to add and manage 3D elements, objects, and environments without writing complex rendering or lighting code.
+Passthrough Support: Offers optional passthrough features, enabling you to create applications that blend real-world visuals with virtual elements, facilitating mixed reality experiences.
+Controller and Hand Tracking: Enables accurate tracking of controllers and hands, making it easier to implement natural interactions within VR environments.
+2D UI Frameworks: Allows integration of existing 2D Android app frameworks and libraries, making it straightforward to bring flatscreen app functionality into VR.
+Physics and Spatial Audio: Includes physics-based interactions and spatial audio capabilities, enhancing the realism and immersion of VR experiences.
+Meta Spatial Editor: A tool to position, scale, and arrange 2D and 3D elements of your app, providing a more intuitive way to build mixed reality applications without needing a game engine editor.
+Spatial SDK capabilities
+
+Use Spatial SDK’s rich functionality to create compelling Horizon OS experiences:
+
+Mixed reality: Spatial SDK supports key mixed reality features such as passthrough, scene, anchors and Mixed Reality Utility Kit (MRUK); enabling devs to quickly build apps that blend the virtual and physical world.
+
+Realistic 3D graphics: Spatial SDK supports modern graphics pipelines including GLTF, physically-based rendering (PBR), image-based lighting, skeletal animations, and rigid body physics, so that developers can create compelling 3D experiences
+
+Complete scene composition: Spatial SDK supports complex compositions containing 3D assets, animations, sounds, physics and more. Build full scenes with Meta Spatial Editor or create them at runtime using code.
+
+Interactive panels: Spatial SDK supports rich panels within your scene built using your preferred 2D UI framework.
+
+Why the Meta Spatial SDK is Important:
+Easier Development: It reduces the complexity and time needed to build VR applications by allowing Android developers to use their familiar tools, such as Android Studio, and the Kotlin programming language.
+Expanding Beyond Gaming: The SDK makes it easier to create productivity apps, utilities, and other non-gaming applications for Meta Quest, moving beyond VR gaming to a more versatile spatial computing platform.
+The Meta Spatial SDK is essentially Meta’s push to bring more utility and diversity to the Quest platform by empowering Android developers to create innovative spatial experiences more efficiently.
+
+Meta Developers
+Edit description
+developers.meta.com
+
+Get developer account
+
+Meta Developers
+September 23, 2024 We're excited to announce that beginning today, developers will have new ways to seamlessly reach…
+developers.meta.com
+
+A brief overview of how to create a “Hello World” app using the Meta Spatial SDK (abbreviated steps)
+
+Prerequisites
+
+Android Studio: Make sure you have Android Studio installed and set up on your computer.
+Meta Quest Device: A Meta Quest 2, 3, or Pro headset with developer mode enabled.
+Meta Quest Developer Hub (MQDH): Install the MQDH for device management and deployment.
+Download the Meta Spatial SDK: Get the latest version of the SDK and sample projects from the official GitHub repository: Meta Spatial SDK Samples.
+Step 1: Set Up the Development Environment
+
+Open Android Studio and create a new Android project:
+
+Choose “Empty Activity” as the project template.
+Configure the project name, e.g., HelloWorldMetaSpatial.
+Select Kotlin as the language and ensure the minimum API level is set to API 24 (Android 7.0) or higher.
+Integrate the Meta Spatial SDK:
+
+Download the SDK samples from the GitHub repository Meta Spatial SDK Samples.
+Add the necessary dependencies and libraries to your project’s build.gradle files:
+Include the Meta Spatial SDK libraries and update your build.gradle files accordingly. Follow the documentation for exact integration steps.
+Step 2: Configuring the Project for Meta Quest
+
+Open AndroidManifest.xml and ensure you add the necessary permissions for spatial tracking, hand tracking, and passthrough functionality:
+<uses-permission android:name="android.permission.CAMERA" /> 
+<uses-permission android:name="android.permission.INTERNET" />
+Update the activity tag to enable the VR mode:
+<meta-data     android:name="com.oculus.vr.mode"     android:value="true" />
+Step 3: Writing the Main Application Code
+
+Open MainActivity.kt and set up the basics:
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.meta.spatial.sdk.SpatialView
+import com.meta.spatial.sdk.SpatialScene
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Create a SpatialView instance
+        val spatialView = SpatialView(this)
+
+        // Set up a basic scene
+        val scene = SpatialScene()
+        scene.addText("Hello World", position = Vector3(0f, 0f, -2f))
+
+        // Attach the scene to the view
+        spatialView.setScene(scene)
+
+        // Set the view as the content view
+        setContentView(spatialView)
+    }
+}
+Step 4: Build and Deploy the App
+
+Connect your Meta Quest device via USB and ensure Developer Mode is enabled.
+Open Meta Quest Developer Hub (MQDH) to manage your device.
+Build the project by selecting “Build > Build Bundle(s) / APK(s) > Build APK(s)” in Android Studio.
+Deploy the app:
+Hit the play button
+Alternatively, use MQDH to install the APK onto your Meta Quest device.
+Alternatively, use adb install path_to_apk from the command line to deploy it directly.
+Step 5: Testing on Meta Quest
+
+Put on your Meta Quest headset, and locate your installed app under “Unknown Sources.”
+Launch your “Hello World” app, and you should see “Hello World” displayed in the virtual environment.
+For more advanced features, refer to the sample projects and official documentation available in the GitHub repository Meta Spatial SDK Samples.
+
+Official Hello World Sample
+Here is the official HelloWord Sample —
+
+Press enter or click to view image in full size
+
+Meta Developers
+Edit description
+developers.meta.com
+
+You need the …
+
+Press enter or click to view image in full size
+
+Meta Spatial SDK
+Downloads | Build with Meta Horizon OS
+Edit description
+developers.meta.com
+
+Jetpack Compose
+You should be able to use Jetpack Compose for development !!! to leverage Compose’s modern, declarative UI features while integrating them into the spatial environment provided by the Meta Spatial SDK.
+
+Here’s how we should be able to do it (abbreviated steps):
+
+Step 1: Set Up Your Project with Compose Dependencies
+
+Create a new Android project in Android Studio.
+
+Add Jetpack Compose dependencies to your build.gradle file:
+
+dependencies {
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.0")
+    implementation("androidx.activity:activity-compose:1.7.2")
+
+    // Include Meta Spatial SDK dependencies
+    implementation("com.meta.spatial:sdk:VERSION_NUMBER") // Replace with the actual version
+}
+Make sure your Compose dependencies are up to date and compatible with your project.
+
+Step 2: Create a Basic Compose “Hello World” UI
+
+Create a new Composable function for displaying "Hello World":
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.ComponentActivity
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Set Compose content
+        setContent {
+            HelloWorldComposable()
+        }
+    }
+}
+
+@Composable
+fun HelloWorldComposable() {
+    Text(
+        text = "Hello World",
+        fontSize = 32.sp,
+        color = Color.White,
+        fontWeight = FontWeight.Bold
+    )
+}
+This is a simple Composable function that displays “Hello World” using Jetpack Compose.
+
+Get YLabZ’s stories in your inbox
+Join Medium for free to get updates from this writer.
+
+Enter your email
+Subscribe
+Step 3: Integrate with Meta Spatial SDK
+
+Modify the MainActivity to include SpatialView as the root view:
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import com.meta.spatial.sdk.SpatialView
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Initialize SpatialView
+        val spatialView = SpatialView(this)
+
+        // Set Compose content within the SpatialView
+        spatialView.setContent {
+            HelloWorldComposable()
+        }
+
+        // Set SpatialView as the activity's content view
+        setContentView(spatialView)
+    }
+}
+Here, the setContent function of Jetpack Compose is nested within the SpatialView, allowing the "Hello World" Composable to render inside the Meta Quest environment.
+
+Step 4: Build and Deploy the App
+
+Build the project and deploy it to your Meta Quest device using Android Studio, MQDH, or adb install path_to_apk.
+Testing on Meta Quest
+
+Launch the app from “Unknown Sources” in your Meta Quest headset, and you should see the “Hello World” text rendered within the VR environment using Jetpack Compose.
+Why Use Compose with Meta Spatial SDK?
+
+Declarative UI: Compose allows you to create complex UI elements more efficiently and declaratively.
+Seamless Integration: Combining Compose with the Meta Spatial SDK means you can build rich, interactive UIs without abandoning familiar Android development practices.
+This setup allows you to harness the power of Jetpack Compose alongside the spatial capabilities of the Meta Spatial SDK, providing a modern, efficient way to develop VR experiences on Meta Quest devices.
+
+Entity Component System (ECS)
+Both visionOS (Apple’s platform for the Vision Pro headset) and Meta’s platforms for VR (like the Meta Quest series using Horizon OS) leverage the Entity Component System (ECS) architecture, which is widely adopted in gaming and real-time 3D applications. ECS is a design pattern that optimizes performance and flexibility for handling complex, interactive environments by decoupling data from behavior. Here’s how both systems apply ECS architecture:
+
+1. Understanding ECS Architecture:
+Entity: Represents a unique ID that acts as a container for components.
+Component: Holds data without any logic (e.g., position, velocity, or color).
+System: Contains the logic to process entities with the relevant components (e.g., movement, rendering).
+The ECS pattern allows for efficient data-oriented design, making it well-suited for rendering, physics, and handling interactions in spatial computing environments like AR/VR.
+
+2. visionOS and ECS:
+Usage: visionOS, Apple’s platform for spatial computing, integrates the ECS pattern primarily through its RealityKit framework. RealityKit provides developers with an ECS-based system to manage AR/VR scenes efficiently.
+Entity and Component Design: In RealityKit, every object in a scene is an entity that can have multiple components attached (e.g., 3D models, animations, or physics properties). This structure allows developers to create complex interactions and animations in AR and VR experiences.
+Flexibility: The ECS pattern in visionOS helps efficiently manage updates to the scene graph, enabling smooth rendering and physics calculations, essential for high-performance mixed reality applications on the Vision Pro.
+3. Meta and ECS:
+Usage: Meta also adopts an ECS architecture, particularly in its game engine integrations (Unity, Unreal Engine) and now in the native Meta Spatial SDK for developing VR experiences. Unity’s ECS, known as DOTS (Data-Oriented Technology Stack), is often used for Meta Quest applications, and the Meta Spatial SDK follows similar principles.
+Optimized Performance: The ECS architecture in Meta’s environment helps in rendering complex 3D environments efficiently on the Quest’s hardware, ensuring smooth frame rates, which is crucial for VR to prevent motion sickness and deliver an immersive experience.
+System Management: Meta’s use of ECS also means that systems can operate independently, managing specific aspects like physics, input handling, or spatial audio, thus improving modularity and scalability in VR applications.
+Similarities and Differences:
+Similarities:
+
+Both systems leverage ECS for performance efficiency, handling the dynamic, complex environments needed for AR/VR.
+The decoupling of data and behavior makes it easier to manage updates and changes in spatial computing experiences.
+Differences:
+
+visionOS emphasizes AR with RealityKit, focusing more on integrating AR elements into real-world spaces, while Meta’s implementation targets full VR experiences with more emphasis on 3D world rendering.
+Meta’s reliance on engines like Unity means adopting Unity’s DOTS ECS, whereas visionOS directly integrates ECS within its RealityKit framework.
+ECS is fundamental in achieving high-performance spatial experiences, and both visionOS and Meta’s platforms use this architecture to provide fluid, responsive, and immersive AR/VR applications. If you’d like more detailed information on how to implement ECS in either platform, let me know!
+
+Universal Scene Description (USD)
+Meta Horizon does not natively use USDZ (Universal Scene Description Zip) as its primary format.
+
+How Meta and USDZ Interact:
+Interoperability: Although Meta Horizon itself doesn’t natively rely on USDZ, Meta has shown interest in supporting open and interoperable standards. Meta might offer conversion or import capabilities for USDZ files to ensure broader compatibility between AR/VR platforms in the future.
+3D Asset Creation: For experiences and environments within Meta Horizon Worlds, Meta primarily focuses on using its internal asset creation tools. These assets can be imported through game engines like Unity or Unreal Engine, which support multiple 3D file formats, but USDZ isn’t a native file type directly used by Meta Horizon.
+Common Formats Used by Meta:
+Meta typically works with formats like FBX, GLTF, and OBJ for 3D models and assets, which are more widely compatible with VR and gaming engines.
+If you’re planning on working with Meta’s VR experiences, consider using GLTF/GLB as it’s an open standard that’s gaining traction across many platforms and is well-suited for VR environments, including Meta’s ecosystem.
+
+NVIDIA is heavily invested in USD.
+
+Universal Scene Description (USD) at NVIDIA
+USD is a powerful, extensible 3D framework. NVIDIA is investing in USD so it evolves as a key building block of the…
+www.nvidia.com
+
+Jensen Huang and Mark Zuckerberg are close freinds and share much in the way of how they see the world …
+
+Jensen Huang, Mark Zuckerberg to Discuss Future of Graphics and Virtual Worlds at SIGGRAPH 2024 …
+
+Jensen Huang, Mark Zuckerberg to Discuss Future of Graphics and Virtual Worlds at SIGGRAPH 2024
+NVIDIA founder and CEO Jensen Huang and Meta founder and CEO Mark Zuckerberg will hold a public fireside chat on…
+blogs.nvidia.com
+
+We believe NVIDIA will push Meta to support USD(Z).
+
+Meta is a member of AOUSD …
+
+Press enter or click to view image in full size
+
+Press enter or click to view image in full size
+
+Meta is a member of AOUSD — Open USD standards body
+Material X
+MaterialX
+The Open Chess Set (authored by Moeen and Mujtaba Sayed, contributed to MaterialX by SideFX, rendered in Arnold for…
+materialx.org
+
+Meta Horizon does not currently list direct support for MaterialX. However, MaterialX is widely supported across various platforms and software used in 3D content creation and rendering, such as Unreal Engine, NVIDIA Omniverse, and Autodesk Maya.
+
+Reference:
+OpenXR Mobile SDK: Purpose and Use
+The OpenXR Mobile SDK is designed primarily for tool builders, engine developers, and third-party integrators who want to enable native development or integrate their engines with Meta devices running Android.
+This SDK provides low-level access and resources, such as APIs, libraries, and samples, to interact directly with Meta Quest or other Meta devices at a native level.
+As an App Developer for Meta Horizon:
+You typically won’t need to interact with the OpenXR Mobile SDK directly, as it’s more suited for those building foundational tools or integrating engines like Unity or Unreal with Meta’s platform.
+For app development, most developers use higher-level engines like Unity or Unreal Engine, which already handle the complexities of OpenXR integration. These engines abstract away the lower-level details, allowing you to focus on creating your VR experience.
+When Might You Need OpenXR?
+If you’re developing an app with highly custom requirements or working on integrating new features that aren’t supported by the standard Unity/Unreal setup, you might consider leveraging OpenXR through the Mobile SDK. However, for most app-building scenarios, especially within Meta Horizon, the existing engines and tools provide all the necessary functionality.
+In summary, as an app developer, you’ll typically build on top of existing engines or tools that utilize OpenXR, rather than working with the OpenXR Mobile SDK directly.
+
+The terms Meta Horizon and Meta Quest refer to different aspects of Meta’s (formerly Facebook’s) VR ecosystem, and they serve distinct purposes:
+
+1. Meta Quest:
+Hardware: Meta Quest is the brand name for Meta’s VR headset hardware, including devices like the Meta Quest 2 and the newly released Meta Quest 3. These headsets are standalone VR devices, meaning they do not require a PC or external sensors to function.
+Platform: The Meta Quest headsets run on a customized version of Android called Horizon OS, which powers the VR exdevelopers.facebook.comC
+runC
+
+Meta Quest Dev
+Meta Android Quest Devbuild.gradleAndroidManifest.xmlandroid.os.BundleMainActivity.ktandroidx.appcompat.app.AppCompatActivity
